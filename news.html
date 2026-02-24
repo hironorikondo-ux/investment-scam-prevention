@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>投資詐欺ニュースまとめ | 投資詐欺防止.jp</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --red:      #e53e3e;
+      --red-dark: #c53030;
+      --navy:     #1a365d;
+      --blue:     #2b6cb0;
+      --light-blue: #ebf8ff;
+      --yellow:   #f6e05e;
+      --gray:     #718096;
+      --light:    #f7fafc;
+      --white:    #ffffff;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
+      color: #2d3748;
+      line-height: 1.7;
+      background: var(--light);
+    }
+
+    /* ===== NAV ===== */
+    nav {
+      position: fixed; top: 0; width: 100%; z-index: 100;
+      background: var(--navy);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 2rem; height: 60px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.3);
+    }
+    .nav-logo { color: #fff; font-weight: 700; font-size: 1.1rem; text-decoration: none; }
+    .nav-logo span { color: var(--yellow); }
+    .nav-links { display: flex; gap: 1.5rem; list-style: none; }
+    .nav-links a { color: #cbd5e0; text-decoration: none; font-size: .9rem; transition: color .2s; }
+    .nav-links a:hover, .nav-links a.active { color: #fff; }
+
+    /* ===== PAGE HEADER ===== */
+    .page-header {
+      background: linear-gradient(135deg, var(--navy) 0%, #2c5282 100%);
+      padding: 100px 2rem 3rem;
+      text-align: center;
+    }
+    .page-header h1 { color: #fff; font-size: clamp(1.6rem, 4vw, 2.6rem); font-weight: 800; margin-bottom: .75rem; }
+    .page-header p { color: #bee3f8; font-size: 1rem; max-width: 600px; margin: 0 auto 1.5rem; }
+    .header-stats {
+      display: inline-flex; gap: 2rem; flex-wrap: wrap; justify-content: center;
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.15);
+      border-radius: 12px;
+      padding: 1rem 2rem;
+    }
+    .header-stat { text-align: center; }
+    .header-stat .num { font-size: 1.6rem; font-weight: 800; color: var(--yellow); }
+    .header-stat .label { font-size: .75rem; color: #90cdf4; }
+
+    /* ===== DISCLAIMER ===== */
+    .disclaimer {
+      background: #fffbeb;
+      border-left: 4px solid #f6ad55;
+      padding: .75rem 1.25rem;
+      font-size: .82rem;
+      color: #744210;
+      max-width: 1100px;
+      margin: 1.5rem auto 0;
+      border-radius: 0 8px 8px 0;
+    }
+
+    /* ===== MAIN LAYOUT ===== */
+    .main {
+      max-width: 1100px;
+      margin: 2rem auto;
+      padding: 0 1.5rem 4rem;
+      display: grid;
+      grid-template-columns: 1fr 280px;
+      gap: 2rem;
+      align-items: start;
+    }
+
+    /* ===== FILTER BAR ===== */
+    .filter-bar {
+      display: flex; gap: .5rem; flex-wrap: wrap; margin-bottom: 1.5rem;
+    }
+    .filter-btn {
+      padding: .4rem 1rem;
+      border: 1.5px solid #cbd5e0;
+      background: #fff;
+      border-radius: 999px;
+      font-size: .85rem;
+      cursor: pointer;
+      transition: all .18s;
+      font-family: inherit;
+      color: #4a5568;
+    }
+    .filter-btn:hover { border-color: var(--blue); color: var(--blue); }
+    .filter-btn.active {
+      background: var(--navy); border-color: var(--navy); color: #fff;
+    }
+
+    /* ===== SORT BAR ===== */
+    .sort-bar {
+      display: flex; align-items: center; gap: .75rem;
+      margin-bottom: 1.25rem; font-size: .85rem; color: var(--gray);
+    }
+    .sort-bar select {
+      font-family: inherit; font-size: .85rem;
+      border: 1px solid #e2e8f0; border-radius: 6px;
+      padding: .3rem .6rem; background: #fff; color: #2d3748;
+      cursor: pointer;
+    }
+    #result-count { margin-left: auto; color: var(--gray); font-size: .82rem; }
+
+    /* ===== NEWS CARDS ===== */
+    .news-list { display: flex; flex-direction: column; gap: 1.25rem; }
+
+    .news-card {
+      background: #fff;
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+      padding: 1.4rem 1.5rem;
+      transition: box-shadow .2s, border-color .2s;
+      cursor: default;
+    }
+    .news-card:hover { box-shadow: 0 6px 20px rgba(0,0,0,.08); border-color: #bee3f8; }
+
+    .card-top {
+      display: flex; align-items: center; gap: .6rem;
+      margin-bottom: .65rem; flex-wrap: wrap;
+    }
+    .cat-badge {
+      font-size: .72rem; font-weight: 700;
+      padding: .2rem .65rem; border-radius: 999px;
+    }
+    .cat-sns    { background: #feebc8; color: #c05621; }
+    .cat-romance{ background: #fed7e2; color: #97266d; }
+    .cat-crypto { background: #e9d8fd; color: #553c9a; }
+    .cat-stock  { background: #c6f6d5; color: #276749; }
+    .cat-law    { background: #bee3f8; color: #2c5282; }
+    .cat-ponzi  { background: #fed7d7; color: #9b2c2c; }
+
+    .news-date { font-size: .78rem; color: var(--gray); margin-left: auto; }
+    .news-source {
+      font-size: .75rem; color: var(--gray);
+      background: var(--light); padding: .15rem .5rem; border-radius: 4px;
+    }
+
+    .news-card h2 {
+      font-size: 1.02rem; font-weight: 700; color: var(--navy);
+      margin-bottom: .5rem; line-height: 1.45;
+    }
+    .news-card p { font-size: .875rem; color: #4a5568; margin-bottom: .9rem; }
+
+    .card-footer {
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: .5rem;
+    }
+    .impact-badge {
+      font-size: .72rem; font-weight: 600;
+      padding: .2rem .6rem; border-radius: 4px;
+    }
+    .impact-high   { background: #fed7d7; color: #742a2a; }
+    .impact-medium { background: #fefcbf; color: #744210; }
+    .impact-info   { background: #e2e8f0; color: #4a5568; }
+
+    .search-link {
+      font-size: .8rem; font-weight: 600; color: var(--blue);
+      text-decoration: none; display: inline-flex; align-items: center; gap: .25rem;
+      transition: color .15s;
+    }
+    .search-link:hover { color: var(--navy); text-decoration: underline; }
+
+    /* ===== SIDEBAR ===== */
+    .sidebar { display: flex; flex-direction: column; gap: 1.5rem; }
+
+    .sidebar-card {
+      background: #fff;
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+      padding: 1.25rem;
+    }
+    .sidebar-card h3 {
+      font-size: .95rem; font-weight: 700; color: var(--navy);
+      margin-bottom: 1rem; padding-bottom: .5rem;
+      border-bottom: 2px solid var(--light);
+    }
+
+    /* trend chart bars */
+    .trend-item { margin-bottom: .9rem; }
+    .trend-label { display: flex; justify-content: space-between; font-size: .8rem; margin-bottom: .3rem; }
+    .trend-label .amount { font-weight: 700; color: var(--red); }
+    .trend-bar-wrap { background: var(--light); border-radius: 4px; height: 8px; overflow: hidden; }
+    .trend-bar { height: 100%; border-radius: 4px; background: var(--red); transition: width 1s ease; }
+
+    /* hotline */
+    .hotline-item {
+      display: flex; align-items: center; gap: .75rem;
+      padding: .6rem 0;
+      border-bottom: 1px solid var(--light);
+    }
+    .hotline-item:last-child { border-bottom: none; }
+    .hotline-num { font-weight: 800; font-size: 1rem; color: var(--navy); }
+    .hotline-label { font-size: .78rem; color: var(--gray); }
+
+    /* news sources */
+    .source-link {
+      display: block; padding: .5rem 0;
+      border-bottom: 1px solid var(--light);
+      font-size: .85rem; color: var(--blue); text-decoration: none;
+      transition: color .15s;
+    }
+    .source-link:hover { color: var(--navy); text-decoration: underline; }
+    .source-link:last-child { border-bottom: none; }
+
+    /* ===== EMPTY STATE ===== */
+    #empty-state {
+      display: none; text-align: center; padding: 3rem 2rem;
+      color: var(--gray); background: #fff; border-radius: 12px;
+      border: 1px solid #e2e8f0;
+    }
+    #empty-state .emoji { font-size: 2.5rem; margin-bottom: .75rem; }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+      .main { grid-template-columns: 1fr; }
+      .sidebar { order: -1; }
+      .nav-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ナビ -->
+<nav>
+  <a class="nav-logo" href="index.html"><span>⚠</span> 投資詐欺防止.jp</a>
+  <ul class="nav-links">
+    <li><a href="index.html">トップ</a></li>
+    <li><a href="index.html#warning">危険サイン</a></li>
+    <li><a href="index.html#checklist">チェックリスト</a></li>
+    <li><a href="index.html#steps">被害にあったら</a></li>
+    <li><a href="checker.html">🔍 業者チェック</a></li>
+    <li><a href="news.html" class="active">ニュース</a></li>
+  </ul>
+</nav>
+
+<!-- ページヘッダー -->
+<div class="page-header">
+  <h1>投資詐欺ニュースまとめ</h1>
+  <p>2024〜2025年に報告された主な投資詐欺事案・統計・法規制の動きをまとめています。</p>
+  <div class="header-stats">
+    <div class="header-stat">
+      <div class="num">約277億円</div>
+      <div class="label">2023年SNS型投資詐欺被害額（警察庁発表）</div>
+    </div>
+    <div class="header-stat">
+      <div class="num">5,631件</div>
+      <div class="label">2023年SNS型投資詐欺認知件数</div>
+    </div>
+    <div class="header-stat">
+      <div class="num">前年比約2倍</div>
+      <div class="label">2023年→2024年 被害件数増加率</div>
+    </div>
+  </div>
+</div>
+
+<div style="max-width:1100px;margin:0 auto;padding:0 1.5rem;">
+  <div class="disclaimer">
+    ⚠ 本ページは公的機関の発表・報道をもとに作成した啓発目的のまとめです。各事案の詳細は一次情報源（警察庁・金融庁・各報道機関）を必ずご確認ください。
+  </div>
+</div>
+
+<!-- メインコンテンツ -->
+<div class="main">
+
+  <!-- 左：ニュース一覧 -->
+  <div>
+    <!-- フィルター -->
+    <div class="filter-bar">
+      <button class="filter-btn active" data-cat="all">すべて</button>
+      <button class="filter-btn" data-cat="sns">SNS型</button>
+      <button class="filter-btn" data-cat="romance">ロマンス詐欺</button>
+      <button class="filter-btn" data-cat="crypto">仮想通貨</button>
+      <button class="filter-btn" data-cat="stock">未公開株・社債</button>
+      <button class="filter-btn" data-cat="law">法規制・対策</button>
+      <button class="filter-btn" data-cat="ponzi">ポンジ・スキーム</button>
+    </div>
+
+    <!-- ソート -->
+    <div class="sort-bar">
+      <span>並び替え：</span>
+      <select id="sort-select">
+        <option value="newest">新しい順</option>
+        <option value="oldest">古い順</option>
+        <option value="impact">重要度順</option>
+      </select>
+      <span id="result-count"></span>
+    </div>
+
+    <!-- カード一覧 -->
+    <div class="news-list" id="news-list"></div>
+    <div id="empty-state">
+      <div class="emoji">🔍</div>
+      <p>該当するニュースが見つかりませんでした。</p>
+    </div>
+  </div>
+
+  <!-- 右：サイドバー -->
+  <div class="sidebar">
+
+    <!-- 被害額推移 -->
+    <div class="sidebar-card">
+      <h3>📊 SNS型投資詐欺 被害額推移</h3>
+      <div class="trend-item">
+        <div class="trend-label"><span>2021年</span><span class="amount">約18億円</span></div>
+        <div class="trend-bar-wrap"><div class="trend-bar" style="width:6%"></div></div>
+      </div>
+      <div class="trend-item">
+        <div class="trend-label"><span>2022年</span><span class="amount">約79億円</span></div>
+        <div class="trend-bar-wrap"><div class="trend-bar" style="width:29%"></div></div>
+      </div>
+      <div class="trend-item">
+        <div class="trend-label"><span>2023年</span><span class="amount">約277億円</span></div>
+        <div class="trend-bar-wrap"><div class="trend-bar" style="width:100%"></div></div>
+      </div>
+      <div class="trend-item">
+        <div class="trend-label"><span>2024年（速報）</span><span class="amount">増加傾向</span></div>
+        <div class="trend-bar-wrap"><div class="trend-bar" style="width:100%; background:#9b2c2c;"></div></div>
+      </div>
+      <p style="font-size:.72rem;color:#a0aec0;margin-top:.75rem;">出典: 警察庁「令和5年における詐欺の認知・検挙状況等」</p>
+    </div>
+
+    <!-- 緊急相談窓口 -->
+    <div class="sidebar-card">
+      <h3>☎ 緊急相談窓口</h3>
+      <div class="hotline-item">
+        <div>
+          <div class="hotline-num">188</div>
+          <div class="hotline-label">消費者ホットライン（24時間）</div>
+        </div>
+      </div>
+      <div class="hotline-item">
+        <div>
+          <div class="hotline-num">#9110</div>
+          <div class="hotline-label">警察相談専用電話</div>
+        </div>
+      </div>
+      <div class="hotline-item">
+        <div>
+          <div class="hotline-num">0570-016811</div>
+          <div class="hotline-label">金融庁 相談室（平日10〜17時）</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 一次情報源リンク -->
+    <div class="sidebar-card">
+      <h3>🔗 最新情報を調べる</h3>
+      <a class="source-link" href="https://www.npa.go.jp/bureau/criminal/souni/tokuryu/tukikome.html" target="_blank" rel="noopener">警察庁 特殊詐欺対策ページ ↗</a>
+      <a class="source-link" href="https://www.fsa.go.jp/ordinary/tyuui/" target="_blank" rel="noopener">金融庁 注意情報 ↗</a>
+      <a class="source-link" href="https://www.caa.go.jp/policies/policy/consumer_policy/caution/" target="_blank" rel="noopener">消費者庁 注意喚起 ↗</a>
+      <a class="source-link" href="https://www.shousen.org/" target="_blank" rel="noopener">証券・金融商品あっせん相談センター ↗</a>
+      <a class="source-link" href="https://www.jc3.or.jp/" target="_blank" rel="noopener">日本サイバー犯罪対策センター(JC3) ↗</a>
+    </div>
+
+    <!-- 免責 -->
+    <div style="font-size:.75rem;color:#a0aec0;padding:.5rem;">
+      ※ニュース内容は公的発表・報道をもとに作成した要約です。最新・正確な情報は一次情報源でご確認ください。
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// ニュースデータ（公的発表・報道ベース）
+// ============================================================
+const news = [
+  {
+    id: 1,
+    date: "2024-12",
+    cat: "law",
+    catLabel: "法規制・対策",
+    source: "金融庁・警察庁",
+    title: "政府が「投資詐欺撲滅プロジェクトチーム」を設置、SNS事業者への規制強化を検討",
+    body: "急増するSNS型投資詐欺を受け、政府は関係省庁横断のプロジェクトチームを設置。SNSプラットフォームへの広告審査強化要請や、偽広告の迅速削除を義務付ける法整備の検討を開始した。",
+    impact: "high",
+    impactLabel: "重要",
+    searchQuery: "投資詐欺 政府対策 2024",
+  },
+  {
+    id: 2,
+    date: "2024-11",
+    cat: "sns",
+    catLabel: "SNS型",
+    source: "警察庁",
+    title: "著名実業家・芸能人の画像を悪用した偽広告による投資詐欺、摘発件数が過去最多に",
+    body: "2024年に入り、FacebookやInstagram上で著名人の画像を無断使用した投資詐欺広告が急増。警察庁は特設窓口を開設し、同広告経由の被害者数・被害額が過去最多ペースで増加していると発表した。",
+    impact: "high",
+    impactLabel: "重要",
+    searchQuery: "なりすまし広告 投資詐欺 2024",
+  },
+  {
+    id: 3,
+    date: "2024-11",
+    cat: "romance",
+    catLabel: "ロマンス詐欺",
+    source: "消費者庁",
+    title: "マッチングアプリ起点のSNS型「ロマンス詐欺」相談件数が急増、20〜40代にも被害拡大",
+    body: "消費者庁の調査で、マッチングアプリで知り合った相手に投資を勧められる「ロマンス詐欺」の相談が急増していることが判明。従来の高齢者中心から20〜40代の若年層にも被害が広がっている。",
+    impact: "high",
+    impactLabel: "重要",
+    searchQuery: "ロマンス詐欺 マッチングアプリ 2024",
+  },
+  {
+    id: 4,
+    date: "2024-10",
+    cat: "law",
+    catLabel: "法規制・対策",
+    source: "金融庁",
+    title: "金融庁が無登録業者リストを更新、SNS経由で勧誘する海外拠点の詐欺業者40社超を追加",
+    body: "金融庁は無登録で金融商品取引業を行う疑いのある業者リストを更新し、SNS上で日本人投資家を勧誘している海外拠点の業者40社超を新たに掲載。投資前の業者確認を強く呼びかけた。",
+    impact: "high",
+    impactLabel: "重要",
+    searchQuery: "金融庁 無登録業者 2024",
+  },
+  {
+    id: 5,
+    date: "2024-10",
+    cat: "crypto",
+    catLabel: "仮想通貨",
+    source: "警察庁・金融庁",
+    title: "偽の暗号資産取引所サイトへ誘導する手口が増加、入金後に出金できなくなる被害が多発",
+    body: "本物そっくりに作られた偽の暗号資産取引所サイトに誘導し、入金後は「税金」「手数料」などを名目に追加送金を繰り返し要求するフィッシング型の暗号資産詐欺が多発。金融庁が注意喚起を発出した。",
+    impact: "high",
+    impactLabel: "重要",
+    searchQuery: "偽 仮想通貨取引所 詐欺 2024",
+  },
+  {
+    id: 6,
+    date: "2024-09",
+    cat: "ponzi",
+    catLabel: "ポンジ・スキーム",
+    source: "警視庁",
+    title: "「高利回りFX自動売買ツール」名目の詐欺グループを摘発、被害者100名超・被害額数億円規模",
+    body: "FX自動売買ツールへの投資を名目に出資を集め、実際には運用せず自転車操業で配当を払い続けていた詐欺グループが摘発された。SNSを通じて「月利20%保証」と謳い勧誘していた。",
+    impact: "high",
+    impactLabel: "重要",
+    searchQuery: "FX自動売買 詐欺 摘発 2024",
+  },
+  {
+    id: 7,
+    date: "2024-08",
+    cat: "law",
+    catLabel: "法規制・対策",
+    source: "総務省・メタ社",
+    title: "総務省がSNS大手に投資詐欺広告の迅速削除を要請、メタ社が対策強化を表明",
+    body: "総務省は主要SNSプラットフォーム事業者に対し、詐欺的な投資広告の迅速削除と審査体制強化を要請。メタ社（Facebook/Instagram）はAIを活用した広告審査の強化と、なりすまし広告の報告窓口拡充を発表した。",
+    impact: "medium",
+    impactLabel: "注目",
+    searchQuery: "総務省 SNS 投資詐欺広告 規制 2024",
+  },
+  {
+    id: 8,
+    date: "2024-08",
+    cat: "romance",
+    catLabel: "ロマンス詐欺",
+    source: "警察庁",
+    title: "国際ロマンス詐欺グループを国際共同捜査で摘発、東南アジア拠点の組織的犯行",
+    body: "SNS・マッチングアプリで日本人を標的にしていた国際ロマンス詐欺グループが、国際刑事警察機構（インターポール）との共同捜査で摘発された。東南アジアを拠点に複数国の市民を被害者とした組織的犯行だった。",
+    impact: "medium",
+    impactLabel: "注目",
+    searchQuery: "国際ロマンス詐欺 摘発 国際共同捜査 2024",
+  },
+  {
+    id: 9,
+    date: "2024-07",
+    cat: "stock",
+    catLabel: "未公開株・社債",
+    source: "証券取引等監視委員会",
+    title: "「上場前の優良株を特別提供」と偽る電話勧誘詐欺が再燃、証券監視委が注意喚起",
+    body: "証券取引等監視委員会は、存在しない未公開株や価値のない株式を「もうすぐ上場する優良企業の株」と偽って高額で売りつける電話勧誘詐欺が再び増加しているとして、改めて注意喚起を行った。",
+    impact: "medium",
+    impactLabel: "注目",
+    searchQuery: "未公開株 電話勧誘 詐欺 2024",
+  },
+  {
+    id: 10,
+    date: "2024-07",
+    cat: "sns",
+    catLabel: "SNS型",
+    source: "日本弁護士連合会",
+    title: "著名人が顔画像の無断使用に対し法的措置、詐欺広告に実名使用の被害申告が相次ぐ",
+    body: "投資詐欺広告に顔写真・名前を無断使用された著名人や実業家が、SNSプラットフォームおよび詐欺グループへの法的措置を進めていることが報じられた。日本弁護士連合会は被害申告の窓口整備を呼びかけた。",
+    impact: "medium",
+    impactLabel: "注目",
+    searchQuery: "投資詐欺 著名人 なりすまし 法的措置 2024",
+  },
+  {
+    id: 11,
+    date: "2024-06",
+    cat: "crypto",
+    catLabel: "仮想通貨",
+    source: "金融庁",
+    title: "「NFT・メタバース投資で確実に10倍」謳う詐欺が若年層を直撃、金融庁が警告",
+    body: "NFTやメタバース関連プロジェクトへの投資名目で高額の暗号資産を詐取する被害が増加。「希少NFTを先行購入できる」などと謳い、若年層を中心に被害が拡大していると金融庁が警告した。",
+    impact: "medium",
+    impactLabel: "注目",
+    searchQuery: "NFT メタバース 投資詐欺 2024",
+  },
+  {
+    id: 12,
+    date: "2024-05",
+    cat: "law",
+    catLabel: "法規制・対策",
+    source: "金融庁",
+    title: "改正資金決済法・金商法が本格施行、無登録業者の暗号資産取引仲介に刑事罰が強化",
+    body: "改正資金決済法・金融商品取引法の関連規定が本格施行され、無登録で暗号資産の取引仲介や投資助言を行う業者への刑事罰が強化された。金融庁は法施行に伴い、無登録業者への対処を積極化する方針を示した。",
+    impact: "info",
+    impactLabel: "制度情報",
+    searchQuery: "資金決済法 金商法 改正 暗号資産 2024",
+  },
+  {
+    id: 13,
+    date: "2024-04",
+    cat: "ponzi",
+    catLabel: "ポンジ・スキーム",
+    source: "財務省・警察庁",
+    title: "海外不動産投資ファンドを装ったポンジ詐欺、投資家200名超から約10億円を詐取",
+    body: "「東南アジア不動産開発への投資で年利15%」と謳い出資を募っていた会社の実態がポンジ・スキームであることが判明。2024年春に強制捜査が入り、代表者らが詐欺容疑で逮捕された。",
+    impact: "high",
+    impactLabel: "重要",
+    searchQuery: "海外不動産 投資ファンド ポンジ 詐欺 逮捕 2024",
+  },
+  {
+    id: 14,
+    date: "2024-03",
+    cat: "sns",
+    catLabel: "SNS型",
+    source: "警察庁",
+    title: "警察庁が2023年のSNS型投資詐欺統計を公表、被害額277億円・件数5,631件で過去最高",
+    body: "警察庁は2023年のSNS型投資詐欺の認知状況を公表。認知件数は5,631件（前年比約2.3倍）、被害額は約277億円（同約2.7倍）といずれも過去最高を記録。LINE・Instagramを介した勧誘が全体の7割超を占めた。",
+    impact: "high",
+    impactLabel: "重要",
+    searchQuery: "警察庁 SNS型投資詐欺 2023年統計",
+  },
+  {
+    id: 15,
+    date: "2024-02",
+    cat: "romance",
+    catLabel: "ロマンス詐欺",
+    source: "消費者庁",
+    title: "消費者庁が「SNS型ロマンス詐欺」に関する注意喚起を強化、被害の実態調査結果を公表",
+    body: "消費者庁は2024年2月にSNS型ロマンス詐欺の被害実態調査結果を公表。被害者の平均被害額は約300万円、「投資で増やせる」と言われて送金した事例が多数を占めた。特に初期段階での相談が回収率を高めると強調した。",
+    impact: "high",
+    impactLabel: "重要",
+    searchQuery: "消費者庁 SNS型ロマンス詐欺 調査 2024",
+  },
+  {
+    id: 16,
+    date: "2024-01",
+    cat: "stock",
+    catLabel: "未公開株・社債",
+    source: "証券取引等監視委員会",
+    title: "投資詐欺「劇場型詐欺」に注意、被害回復を装い二次被害が急増",
+    body: "過去に投資詐欺被害にあった方に「被害を回復できる」と近づき、追加の費用を要求して再びだまし取る「劇場型詐欺」が急増。証券取引等監視委員会は被害者名簿が詐欺グループ間で売買されていると指摘した。",
+    impact: "high",
+    impactLabel: "重要",
+    searchQuery: "劇場型詐欺 投資詐欺 二次被害 2024",
+  },
+];
+
+// ============================================================
+// 表示ロジック
+// ============================================================
+const catColors = {
+  sns: "cat-sns", romance: "cat-romance", crypto: "cat-crypto",
+  stock: "cat-stock", law: "cat-law", ponzi: "cat-ponzi",
+};
+const impactColors = {
+  high: "impact-high", medium: "impact-medium", info: "impact-info",
+};
+
+let currentCat = "all";
+let currentSort = "newest";
+
+function getFiltered() {
+  let list = currentCat === "all" ? [...news] : news.filter(n => n.cat === currentCat);
+  if (currentSort === "newest") {
+    list.sort((a, b) => b.date.localeCompare(a.date));
+  } else if (currentSort === "oldest") {
+    list.sort((a, b) => a.date.localeCompare(b.date));
+  } else if (currentSort === "impact") {
+    const order = { high: 0, medium: 1, info: 2 };
+    list.sort((a, b) => order[a.impact] - order[b.impact]);
+  }
+  return list;
+}
+
+function formatDate(ym) {
+  const [y, m] = ym.split("-");
+  return `${y}年${parseInt(m)}月`;
+}
+
+// Google ニュース検索 URL を生成
+function googleNewsUrl(query) {
+  return `https://news.google.com/search?q=${encodeURIComponent(query)}&hl=ja&gl=JP&ceid=JP:ja`;
+}
+
+function render() {
+  const list = getFiltered();
+  const container = document.getElementById("news-list");
+  const empty = document.getElementById("empty-state");
+  const counter = document.getElementById("result-count");
+
+  counter.textContent = `${list.length} 件表示中`;
+
+  if (list.length === 0) {
+    container.innerHTML = "";
+    empty.style.display = "block";
+    return;
+  }
+  empty.style.display = "none";
+
+  container.innerHTML = list.map(n => `
+    <div class="news-card">
+      <div class="card-top">
+        <span class="cat-badge ${catColors[n.cat]}">${n.catLabel}</span>
+        <span class="news-source">${n.source}</span>
+        <span class="news-date">${formatDate(n.date)}</span>
+      </div>
+      <h2>${n.title}</h2>
+      <p>${n.body}</p>
+      <div class="card-footer">
+        <span class="impact-badge ${impactColors[n.impact]}">${n.impactLabel}</span>
+        <a class="search-link" href="${googleNewsUrl(n.searchQuery)}" target="_blank" rel="noopener">
+          関連ニュースを検索 ↗
+        </a>
+      </div>
+    </div>
+  `).join("");
+}
+
+// フィルターボタン
+document.querySelectorAll(".filter-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    currentCat = btn.dataset.cat;
+    render();
+  });
+});
+
+// ソート
+document.getElementById("sort-select").addEventListener("change", e => {
+  currentSort = e.target.value;
+  render();
+});
+
+// 初期描画
+render();
+</script>
+
+</body>
+</html>

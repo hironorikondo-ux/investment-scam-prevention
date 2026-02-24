@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>投資詐欺から身を守る | 知識が最大の防衛策</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --red:     #e53e3e;
+      --red-dark:#c53030;
+      --navy:    #1a365d;
+      --blue:    #2b6cb0;
+      --light-blue: #ebf8ff;
+      --yellow:  #f6e05e;
+      --yellow-bg: #fffff0;
+      --gray:    #718096;
+      --light:   #f7fafc;
+      --white:   #ffffff;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
+      color: #2d3748;
+      line-height: 1.7;
+    }
+
+    /* ========= NAV ========= */
+    nav {
+      position: fixed; top: 0; width: 100%; z-index: 100;
+      background: var(--navy);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 2rem;
+      height: 60px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.3);
+    }
+    .nav-logo { color: #fff; font-weight: 700; font-size: 1.1rem; text-decoration: none; }
+    .nav-logo span { color: var(--yellow); }
+    .nav-links { display: flex; gap: 1.5rem; list-style: none; }
+    .nav-links a { color: #cbd5e0; text-decoration: none; font-size: .9rem; transition: color .2s; }
+    .nav-links a:hover, .nav-links a.active { color: #fff; }
+    .nav-links a.news-link {
+      background: var(--red); color: #fff;
+      padding: .25rem .75rem; border-radius: 999px; font-weight: 600;
+    }
+    .nav-links a.news-link:hover { background: var(--red-dark); }
+
+    /* ========= HERO ========= */
+    #hero {
+      min-height: 100vh;
+      background: linear-gradient(135deg, var(--navy) 0%, #2c5282 60%, #2b6cb0 100%);
+      display: flex; align-items: center; justify-content: center;
+      text-align: center;
+      padding: 80px 2rem 4rem;
+      position: relative; overflow: hidden;
+    }
+    #hero::before {
+      content: "";
+      position: absolute; inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    .hero-content { position: relative; max-width: 780px; }
+    .hero-badge {
+      display: inline-block;
+      background: rgba(229,62,62,.15);
+      border: 1px solid rgba(229,62,62,.4);
+      color: #fc8181;
+      padding: .35rem 1rem;
+      border-radius: 999px;
+      font-size: .85rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      letter-spacing: .05em;
+    }
+    #hero h1 {
+      font-size: clamp(2rem, 5vw, 3.4rem);
+      color: #fff;
+      font-weight: 800;
+      line-height: 1.25;
+      margin-bottom: 1.2rem;
+    }
+    #hero h1 span { color: var(--yellow); }
+    #hero p {
+      font-size: clamp(1rem, 2vw, 1.2rem);
+      color: #bee3f8;
+      max-width: 600px;
+      margin: 0 auto 2.5rem;
+    }
+    .hero-cta {
+      display: inline-flex; align-items: center; gap: .5rem;
+      background: var(--red); color: #fff;
+      padding: .85rem 2.2rem; border-radius: 8px;
+      font-size: 1.05rem; font-weight: 700;
+      text-decoration: none;
+      box-shadow: 0 4px 20px rgba(229,62,62,.5);
+      transition: background .2s, transform .15s;
+    }
+    .hero-cta:hover { background: var(--red-dark); transform: translateY(-2px); }
+    .hero-stats {
+      display: flex; justify-content: center; gap: 3rem;
+      margin-top: 3rem; flex-wrap: wrap;
+    }
+    .stat { text-align: center; }
+    .stat-num { font-size: 2rem; font-weight: 800; color: var(--yellow); }
+    .stat-label { font-size: .8rem; color: #90cdf4; margin-top: .2rem; }
+
+    /* ========= SECTIONS COMMON ========= */
+    section { padding: 5rem 2rem; }
+    .container { max-width: 1100px; margin: 0 auto; }
+    .section-tag {
+      display: inline-block; font-size: .8rem; font-weight: 700;
+      letter-spacing: .1em; text-transform: uppercase;
+      color: var(--blue); background: var(--light-blue);
+      padding: .25rem .75rem; border-radius: 999px; margin-bottom: 1rem;
+    }
+    .section-title {
+      font-size: clamp(1.5rem, 3vw, 2.2rem);
+      font-weight: 800; color: var(--navy);
+      margin-bottom: .75rem;
+    }
+    .section-sub { color: var(--gray); max-width: 600px; margin-bottom: 3rem; }
+
+    /* ========= WARNING SIGNS ========= */
+    #warning { background: var(--light); }
+    .warning-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+    .warning-card {
+      background: #fff;
+      border-left: 4px solid var(--red);
+      border-radius: 0 12px 12px 0;
+      padding: 1.5rem;
+      box-shadow: 0 2px 12px rgba(0,0,0,.06);
+      transition: transform .2s, box-shadow .2s;
+    }
+    .warning-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,.1); }
+    .warning-icon { font-size: 2rem; margin-bottom: .75rem; }
+    .warning-card h3 { font-size: 1rem; font-weight: 700; color: var(--red-dark); margin-bottom: .5rem; }
+    .warning-card p { font-size: .9rem; color: #4a5568; }
+
+    /* ========= SCAM TYPES ========= */
+    #types { background: var(--white); }
+    .type-list { display: flex; flex-direction: column; gap: 1rem; }
+    .type-item {
+      display: flex; gap: 1.25rem; align-items: flex-start;
+      background: var(--light);
+      border-radius: 12px; padding: 1.5rem;
+      border: 1px solid #e2e8f0;
+    }
+    .type-num {
+      min-width: 2.5rem; height: 2.5rem;
+      background: var(--navy); color: #fff;
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 1rem;
+    }
+    .type-item h3 { font-weight: 700; color: var(--navy); margin-bottom: .3rem; }
+    .type-item p { font-size: .9rem; color: #4a5568; }
+    .type-item .tag {
+      display: inline-block; font-size: .72rem; font-weight: 600;
+      background: #fed7d7; color: var(--red-dark);
+      padding: .15rem .6rem; border-radius: 999px; margin-top: .5rem;
+    }
+
+    /* ========= CHECKLIST ========= */
+    #checklist { background: var(--yellow-bg); }
+    .checklist-box {
+      background: #fff;
+      border: 2px solid var(--yellow);
+      border-radius: 16px;
+      padding: 2.5rem;
+      max-width: 760px;
+      box-shadow: 0 4px 24px rgba(0,0,0,.06);
+    }
+    .checklist-box h3 { font-size: 1.2rem; font-weight: 700; color: var(--navy); margin-bottom: 1.5rem; }
+    .check-item {
+      display: flex; align-items: flex-start; gap: .75rem;
+      padding: .75rem 0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .check-item:last-child { border-bottom: none; }
+    .check-box {
+      min-width: 24px; height: 24px;
+      border: 2px solid #cbd5e0; border-radius: 6px;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: all .15s;
+    }
+    .check-box.checked { background: #38a169; border-color: #38a169; color: #fff; }
+    .check-text { font-size: .95rem; color: #2d3748; }
+    .check-text.done { text-decoration: line-through; color: #a0aec0; }
+    #checklist-result {
+      margin-top: 1.5rem; padding: 1rem; border-radius: 8px;
+      text-align: center; font-weight: 600; display: none;
+    }
+    .result-safe { background: #c6f6d5; color: #276749; }
+    .result-caution { background: #fefcbf; color: #744210; }
+    .result-danger { background: #fed7d7; color: #742a2a; }
+
+    /* ========= STEPS ========= */
+    #steps { background: var(--light); }
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem; position: relative;
+    }
+    .step-card {
+      background: #fff; border-radius: 16px; padding: 2rem 1.5rem;
+      text-align: center;
+      box-shadow: 0 2px 12px rgba(0,0,0,.06);
+      border-top: 4px solid var(--blue);
+    }
+    .step-card .step-num {
+      width: 48px; height: 48px; border-radius: 50%;
+      background: var(--blue); color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 1.2rem;
+      margin: 0 auto 1rem;
+    }
+    .step-card h3 { font-weight: 700; color: var(--navy); margin-bottom: .5rem; }
+    .step-card p { font-size: .875rem; color: var(--gray); }
+
+    /* ========= RESOURCES ========= */
+    #resources { background: var(--white); }
+    .resource-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.5rem;
+    }
+    .resource-card {
+      border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.5rem;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .resource-card:hover { border-color: var(--blue); box-shadow: 0 4px 16px rgba(43,108,176,.1); }
+    .resource-card .icon { font-size: 2rem; margin-bottom: .75rem; }
+    .resource-card h3 { font-weight: 700; color: var(--navy); margin-bottom: .4rem; }
+    .resource-card p { font-size: .875rem; color: var(--gray); margin-bottom: .75rem; }
+    .resource-card .link {
+      font-size: .875rem; font-weight: 600; color: var(--blue);
+    }
+
+    /* ========= CTA BANNER ========= */
+    #cta-banner {
+      background: linear-gradient(135deg, var(--red-dark), var(--red));
+      padding: 4rem 2rem; text-align: center;
+    }
+    #cta-banner h2 { font-size: clamp(1.5rem, 3vw, 2rem); color: #fff; font-weight: 800; margin-bottom: .75rem; }
+    #cta-banner p { color: #fed7d7; margin-bottom: 2rem; font-size: 1rem; }
+    .cta-buttons { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+    .btn-white {
+      background: #fff; color: var(--red-dark);
+      padding: .75rem 2rem; border-radius: 8px;
+      font-weight: 700; text-decoration: none; font-size: 1rem;
+      transition: background .2s;
+    }
+    .btn-white:hover { background: #fff5f5; }
+    .btn-outline {
+      background: transparent; color: #fff;
+      border: 2px solid rgba(255,255,255,.6);
+      padding: .75rem 2rem; border-radius: 8px;
+      font-weight: 700; text-decoration: none; font-size: 1rem;
+      transition: border-color .2s;
+    }
+    .btn-outline:hover { border-color: #fff; }
+
+    /* ========= FOOTER ========= */
+    footer {
+      background: var(--navy); color: #a0aec0;
+      text-align: center; padding: 2rem;
+      font-size: .85rem;
+    }
+    footer strong { color: #fff; }
+
+    /* ========= ALERT TICKER ========= */
+    .ticker-wrap {
+      background: var(--red); color: #fff;
+      padding: .5rem 0; overflow: hidden;
+      white-space: nowrap;
+    }
+    .ticker {
+      display: inline-block;
+      animation: ticker 28s linear infinite;
+      font-size: .875rem; font-weight: 600;
+      padding-left: 100%;
+    }
+    @keyframes ticker {
+      0%   { transform: translate3d(0, 0, 0); }
+      100% { transform: translate3d(-100%, 0, 0); }
+    }
+
+    /* ========= RESPONSIVE ========= */
+    @media (max-width: 640px) {
+      .nav-links { display: none; }
+      .hero-stats { gap: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ナビ -->
+<nav>
+  <a class="nav-logo" href="#"><span>⚠</span> 投資詐欺防止.jp</a>
+  <ul class="nav-links">
+    <li><a href="#warning">危険サイン</a></li>
+    <li><a href="#types">詐欺の手口</a></li>
+    <li><a href="#checklist">チェックリスト</a></li>
+    <li><a href="#steps">被害にあったら</a></li>
+    <li><a href="#resources">相談窓口</a></li>
+    <li><a href="checker.html">🔍 業者チェック</a></li>
+    <li><a href="news.html" class="news-link">📰 ニュース</a></li>
+  </ul>
+</nav>
+
+<!-- ティッカー -->
+<div class="ticker-wrap" style="margin-top:60px">
+  <span class="ticker">
+    ⚠ 「必ず儲かる」は詐欺のサイン &nbsp;|&nbsp;
+    ⚠ SNSで知り合った人の投資話は要注意 &nbsp;|&nbsp;
+    ⚠ 金融庁への登録を必ず確認 &nbsp;|&nbsp;
+    ⚠ 高額な利回りをうたう商品は危険 &nbsp;|&nbsp;
+    ⚠ 「今だけ」「急いで」という勧誘には乗らない &nbsp;|&nbsp;
+    ⚠ 消費者ホットライン: 188（いやや） &nbsp;&nbsp;&nbsp;
+  </span>
+</div>
+
+<!-- ヒーロー -->
+<section id="hero">
+  <div class="hero-content">
+    <div class="hero-badge">投資詐欺被害 年間 数百億円超</div>
+    <h1>その投資話、<span>本当に大丈夫</span>ですか？</h1>
+    <p>「必ず儲かる」「元本保証」——甘い言葉の裏に潜む詐欺の手口を知り、大切な資産を守りましょう。</p>
+    <a href="#checklist" class="hero-cta">
+      &#x2714; 今すぐ安全チェック
+    </a>
+    <div class="hero-stats">
+      <div class="stat">
+        <div class="stat-num">3万件+</div>
+        <div class="stat-label">年間相談件数（消費生活センター）</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">数百億円</div>
+        <div class="stat-label">年間推定被害額</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">60代以上</div>
+        <div class="stat-label">被害者の多くの年齢層</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 危険サイン -->
+<section id="warning">
+  <div class="container">
+    <span class="section-tag">Red Flags</span>
+    <h2 class="section-title">これが出たら要注意！<br>投資詐欺の9大危険サイン</h2>
+    <p class="section-sub">以下のどれか一つでも当てはまったら、立ち止まって冷静に判断してください。</p>
+    <div class="warning-grid">
+      <div class="warning-card">
+        <div class="warning-icon">💰</div>
+        <h3>「必ず儲かる」「元本保証」</h3>
+        <p>投資にリスクはつきもの。「絶対安全」と言い切る商品は法律上存在しません。</p>
+      </div>
+      <div class="warning-card">
+        <div class="warning-icon">📈</div>
+        <h3>異常に高い利回り</h3>
+        <p>年利10%超などをうたう商品は詐欺の疑いが濃厚です。銀行預金の数十〜数百倍の利益は現実的ではありません。</p>
+      </div>
+      <div class="warning-card">
+        <div class="warning-icon">⏰</div>
+        <h3>「今だけ」「今すぐ」と急かす</h3>
+        <p>時間的プレッシャーをかけて冷静な判断を妨げるのは典型的な詐欺の手口です。</p>
+      </div>
+      <div class="warning-card">
+        <div class="warning-icon">🤫</div>
+        <h3>「内緒にして」と口止め</h3>
+        <p>家族や友人に相談させないようにする勧誘は必ず悪意があります。</p>
+      </div>
+      <div class="warning-card">
+        <div class="warning-icon">📱</div>
+        <h3>SNS・マッチングアプリ経由の勧誘</h3>
+        <p>面識のない相手からの投資話は「ロマンス詐欺」「SNS型投資詐欺」の可能性大。</p>
+      </div>
+      <div class="warning-card">
+        <div class="warning-icon">🏢</div>
+        <h3>登録・ライセンスが確認できない</h3>
+        <p>金融商品を扱う業者は金融庁への登録が必須。確認できない業者とは取引しないこと。</p>
+      </div>
+      <div class="warning-card">
+        <div class="warning-icon">💸</div>
+        <h3>出金できない・追加入金を要求</h3>
+        <p>「税金を払えば出金できる」などと言って追加送金を求めるのは詐欺の決定的サインです。</p>
+      </div>
+      <div class="warning-card">
+        <div class="warning-icon">👑</div>
+        <h3>有名人・著名人の名前を使う</h3>
+        <p>芸能人や実業家の画像・名前を無断使用した広告は詐欺が多数確認されています。</p>
+      </div>
+      <div class="warning-card">
+        <div class="warning-icon">🌐</div>
+        <h3>海外の運用・仮想通貨を強調</h3>
+        <p>「海外の高利回りファンド」「暗号資産で確実に増やす」は詐欺の常套句です。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 詐欺の手口 -->
+<section id="types">
+  <div class="container">
+    <span class="section-tag">Scam Types</span>
+    <h2 class="section-title">代表的な投資詐欺の手口</h2>
+    <p class="section-sub">詐欺師たちの手口を知ることが最大の防御になります。</p>
+    <div class="type-list">
+      <div class="type-item">
+        <div class="type-num">1</div>
+        <div>
+          <h3>SNS型投資詐欺（偽の著名人広告）</h3>
+          <p>SNSに実業家・芸能人の偽広告を出し、LINEグループなどに誘導。最初は少額で利益が出たように見せ、大きな金額を投資させて消える。</p>
+          <span class="tag">近年急増中</span>
+        </div>
+      </div>
+      <div class="type-item">
+        <div class="type-num">2</div>
+        <div>
+          <h3>ロマンス詐欺（国際ロマンス詐欺）</h3>
+          <p>マッチングアプリ・SNSで親しくなり、恋愛感情を利用して投資を勧める。「私も同じ投資で儲けた」と信頼させる手口。</p>
+          <span class="tag">若年層にも被害拡大</span>
+        </div>
+      </div>
+      <div class="type-item">
+        <div class="type-num">3</div>
+        <div>
+          <h3>ポンジ・スキーム（自転車操業型詐欺）</h3>
+          <p>新規投資家から集めたお金を既存投資家への「配当」に充て、正常に運用しているように偽装する。最終的に破綻して出金不能になる。</p>
+          <span class="tag">組織的詐欺</span>
+        </div>
+      </div>
+      <div class="type-item">
+        <div class="type-num">4</div>
+        <div>
+          <h3>未公開株・社債詐欺</h3>
+          <p>「上場前の株を特別に売る」などと言い、実在しないか価値のない株・社債を高値で売りつける。電話での強引な勧誘が多い。</p>
+          <span class="tag">高齢者に多い</span>
+        </div>
+      </div>
+      <div class="type-item">
+        <div class="type-num">5</div>
+        <div>
+          <h3>仮想通貨（暗号資産）詐欺</h3>
+          <p>「新しい仮想通貨に投資すれば確実に10倍になる」などと勧誘。偽の取引所サイトに誘導し入金させてから消える。</p>
+          <span class="tag">技術的手口</span>
+        </div>
+      </div>
+      <div class="type-item">
+        <div class="type-num">6</div>
+        <div>
+          <h3>劇場型詐欺（二次被害型）</h3>
+          <p>過去に詐欺被害にあった人に「被害を回復できる」と近づき、追加のお金をだまし取る。被害者の弱みにつけ込む悪質な手口。</p>
+          <span class="tag">被害者を再び狙う</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- チェックリスト -->
+<section id="checklist">
+  <div class="container">
+    <span class="section-tag">Safety Check</span>
+    <h2 class="section-title">投資前の安全確認チェックリスト</h2>
+    <p class="section-sub">投資を決める前に、以下の項目をすべて確認しましょう。チェックが多いほど安全です。</p>
+    <div class="checklist-box">
+      <h3>&#x2705; 全項目に当てはまれば安全度が高まります</h3>
+      <div id="checklist-items"></div>
+      <div id="checklist-result"></div>
+    </div>
+  </div>
+</section>
+
+<!-- 被害にあったら -->
+<section id="steps">
+  <div class="container">
+    <span class="section-tag">If Victimized</span>
+    <h2 class="section-title">被害にあったら、すぐにこの順番で動く</h2>
+    <p class="section-sub">時間が経つほど回収が難しくなります。気づいたらすぐ行動を。</p>
+    <div class="steps-grid">
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <h3>送金をすぐ止める</h3>
+        <p>銀行・カード会社に連絡し、追加の送金・引き落としを止める。</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <h3>証拠を保全する</h3>
+        <p>メッセージ・振込明細・契約書などのスクリーンショットを保存する。</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <h3>警察に被害届を出す</h3>
+        <p>最寄りの警察署か「#9110（警察相談専用電話）」に相談・届出をする。</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">4</div>
+        <h3>消費生活センターに相談</h3>
+        <p>「188（いやや）」に電話。専門家が対応方法を案内してくれます。</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">5</div>
+        <h3>弁護士・法テラスに相談</h3>
+        <p>法的な回収手続きや詐欺業者への対応は専門家に任せましょう。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 相談窓口 -->
+<section id="resources">
+  <div class="container">
+    <span class="section-tag">Resources</span>
+    <h2 class="section-title">公式の相談・確認窓口</h2>
+    <p class="section-sub">迷ったら一人で抱え込まず、公的機関に相談しましょう。無料で利用できます。</p>
+    <div class="resource-grid">
+      <div class="resource-card">
+        <div class="icon">🏛</div>
+        <h3>金融庁 金融サービス利用者相談室</h3>
+        <p>業者の登録確認・金融トラブルの相談ができます。</p>
+        <span class="link">0570-016811</span>
+      </div>
+      <div class="resource-card">
+        <div class="icon">☎</div>
+        <h3>消費者ホットライン</h3>
+        <p>投資トラブル全般の相談。最寄りの消費生活センターに繋がります。</p>
+        <span class="link">188（いやや）</span>
+      </div>
+      <div class="resource-card">
+        <div class="icon">👮</div>
+        <h3>警察相談専用電話</h3>
+        <p>詐欺の疑いや被害の相談。24時間対応の都道府県もあります。</p>
+        <span class="link">#9110</span>
+      </div>
+      <div class="resource-card">
+        <div class="icon">⚖</div>
+        <h3>法テラス（日本司法支援センター）</h3>
+        <p>収入が少ない方でも弁護士費用の立替制度が利用できます。</p>
+        <span class="link">0570-078374</span>
+      </div>
+      <div class="resource-card">
+        <div class="icon">🔍</div>
+        <h3>金融庁 免許・登録業者検索</h3>
+        <p>業者が本当に登録されているかを公式データベースで確認できます。</p>
+        <span class="link">金融庁ウェブサイトで検索</span>
+      </div>
+      <div class="resource-card">
+        <div class="icon">🤝</div>
+        <h3>証券・金融商品あっせん相談センター</h3>
+        <p>証券会社とのトラブルを無料で解決できるADR機関です。</p>
+        <span class="link">0120-64-5005</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTAバナー -->
+<section id="cta-banner">
+  <h2>一人で悩まないでください</h2>
+  <p>「おかしい」と思ったその感覚が正解です。迷ったらすぐ相談を。</p>
+  <div class="cta-buttons">
+    <a href="tel:188" class="btn-white">☎ 188に電話する</a>
+    <a href="#warning" class="btn-outline">危険サインを確認する</a>
+  </div>
+</section>
+
+<!-- フッター -->
+<footer>
+  <strong>投資詐欺防止啓発サイト</strong><br>
+  <span style="font-size:.8rem; margin-top:.5rem; display:block;">
+    本サイトは投資詐欺の啓発を目的として作成されたものであり、特定の金融商品・サービスの勧誘を行うものではありません。<br>
+    相談窓口の電話番号・情報は変更になる場合があります。最新情報は各機関の公式サイトでご確認ください。
+  </span>
+</footer>
+
+<script>
+  // チェックリストデータ
+  const items = [
+    "業者が金融庁に登録されていることを確認した",
+    "業者の住所・電話番号・代表者名を確認した",
+    "契約書・目論見書をきちんと読んだ",
+    "家族や信頼できる人に相談した",
+    "「必ず儲かる」「元本保証」などの言葉がない",
+    "急かされたり、プレッシャーをかけられていない",
+    "利回りが常識的な範囲内（年数%程度）である",
+    "SNSや知らない人からの紹介ではない",
+    "いつでも出金できることを確認した",
+    "疑問点をすべて書面で回答してもらった",
+  ];
+
+  const container = document.getElementById("checklist-items");
+  const result = document.getElementById("checklist-result");
+  let checked = new Array(items.length).fill(false);
+
+  function render() {
+    container.innerHTML = items.map((text, i) => `
+      <div class="check-item">
+        <div class="check-box ${checked[i] ? 'checked' : ''}" onclick="toggle(${i})">
+          ${checked[i] ? '&#x2713;' : ''}
+        </div>
+        <span class="check-text ${checked[i] ? 'done' : ''}">${text}</span>
+      </div>
+    `).join('');
+
+    const count = checked.filter(Boolean).length;
+    if (count === items.length) {
+      result.style.display = "block";
+      result.className = "result-safe";
+      result.textContent = `✅ 全${items.length}項目クリア！比較的安全です。それでも最終判断は慎重に。`;
+    } else if (count >= 7) {
+      result.style.display = "block";
+      result.className = "result-caution";
+      result.textContent = `⚠ ${count}/${items.length} 項目クリア。残り${items.length - count}項目を確認してから判断を。`;
+    } else if (count >= 1) {
+      result.style.display = "block";
+      result.className = "result-danger";
+      result.textContent = `🚨 ${count}/${items.length} 項目のみクリア。投資する前に必ず全項目を確認してください。`;
+    } else {
+      result.style.display = "none";
+    }
+  }
+
+  window.toggle = function(i) {
+    checked[i] = !checked[i];
+    render();
+  };
+
+  render();
+
+  // スクロールアニメーション
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.style.opacity = "1";
+        e.target.style.transform = "translateY(0)";
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.warning-card, .type-item, .step-card, .resource-card').forEach(el => {
+    el.style.opacity = "0";
+    el.style.transform = "translateY(20px)";
+    el.style.transition = "opacity .5s ease, transform .5s ease";
+    observer.observe(el);
+  });
+</script>
+
+</body>
+</html>
