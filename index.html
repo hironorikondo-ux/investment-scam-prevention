@@ -89,16 +89,26 @@
       max-width: 600px;
       margin: 0 auto 2.5rem;
     }
+    .hero-ctas {
+      display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center;
+    }
     .hero-cta {
       display: inline-flex; align-items: center; gap: .5rem;
-      background: var(--red); color: #fff;
       padding: .85rem 2.2rem; border-radius: 8px;
       font-size: 1.05rem; font-weight: 700;
       text-decoration: none;
-      box-shadow: 0 4px 20px rgba(229,62,62,.5);
       transition: background .2s, transform .15s;
     }
-    .hero-cta:hover { background: var(--red-dark); transform: translateY(-2px); }
+    .hero-cta.cta-check {
+      background: var(--red); color: #fff;
+      box-shadow: 0 4px 20px rgba(229,62,62,.5);
+    }
+    .hero-cta.cta-check:hover { background: var(--red-dark); transform: translateY(-2px); }
+    .hero-cta.cta-checker {
+      background: #fff; color: var(--navy);
+      box-shadow: 0 4px 20px rgba(0,0,0,.2);
+    }
+    .hero-cta.cta-checker:hover { background: #ebf8ff; transform: translateY(-2px); }
     .hero-stats {
       display: flex; justify-content: center; gap: 3rem;
       margin-top: 3rem; flex-wrap: wrap;
@@ -266,6 +276,41 @@
     }
     .btn-outline:hover { border-color: #fff; }
 
+    /* ========= CHECKER BANNER ========= */
+    .checker-banner {
+      background: linear-gradient(135deg, #1a365d 0%, #2b6cb0 100%);
+      border-radius: 16px;
+      padding: 2.5rem 2rem;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 2rem; flex-wrap: wrap;
+      margin: 0 2rem 1rem;
+    }
+    .checker-banner-text { color: #fff; flex: 1; min-width: 220px; }
+    .checker-banner-text .label {
+      font-size: .75rem; font-weight: 700; letter-spacing: .12em;
+      background: rgba(255,255,255,.15); color: #bee3f8;
+      display: inline-block; padding: .2rem .7rem; border-radius: 999px;
+      margin-bottom: .75rem;
+    }
+    .checker-banner-text h3 {
+      font-size: clamp(1.1rem, 2.5vw, 1.5rem); font-weight: 800; margin-bottom: .5rem;
+    }
+    .checker-banner-text p { font-size: .9rem; color: #bee3f8; }
+    .checker-banner-cta {
+      display: inline-flex; align-items: center; gap: .5rem;
+      background: #fff; color: var(--navy);
+      padding: .9rem 2rem; border-radius: 10px;
+      font-size: 1rem; font-weight: 800;
+      text-decoration: none; white-space: nowrap;
+      box-shadow: 0 4px 16px rgba(0,0,0,.25);
+      transition: background .2s, transform .15s;
+    }
+    .checker-banner-cta:hover { background: #ebf8ff; transform: translateY(-2px); }
+    @media (max-width: 560px) {
+      .checker-banner { margin: 0 1rem 1rem; padding: 1.75rem 1.25rem; }
+      .checker-banner-cta { width: 100%; justify-content: center; }
+    }
+
     /* ========= FOOTER ========= */
     footer {
       background: var(--navy); color: #a0aec0;
@@ -296,6 +341,50 @@
       .nav-links { display: none; }
       .hero-stats { gap: 1.5rem; }
     }
+
+    /* ========= HAMBURGER MENU ========= */
+    .hamburger {
+      display: none;
+      background: none; border: none;
+      color: #fff; font-size: 1.6rem;
+      cursor: pointer; padding: .2rem .4rem;
+      line-height: 1; border-radius: 4px;
+      transition: background .15s;
+    }
+    .hamburger:hover { background: rgba(255,255,255,.12); }
+
+    /* モバイルドロワー */
+    .nav-drawer {
+      display: none;
+      position: fixed; top: 60px; left: 0; right: 0; z-index: 99;
+      background: var(--navy);
+      flex-direction: column;
+      box-shadow: 0 6px 20px rgba(0,0,0,.35);
+      border-top: 1px solid rgba(255,255,255,.08);
+    }
+    .nav-drawer.open { display: flex; }
+    .nav-drawer a {
+      color: #cbd5e0; text-decoration: none;
+      padding: .9rem 1.75rem; font-size: 1rem;
+      border-bottom: 1px solid rgba(255,255,255,.06);
+      transition: background .15s, color .15s;
+      display: flex; align-items: center; gap: .5rem;
+    }
+    .nav-drawer a:hover { background: rgba(255,255,255,.07); color: #fff; }
+    .nav-drawer a.active { color: #fff; font-weight: 700; }
+    .nav-drawer a.news-link {
+      color: #fff; background: rgba(229,62,62,.2);
+    }
+    .nav-drawer a.news-link:hover { background: rgba(229,62,62,.35); }
+    .nav-drawer a.checker-link {
+      color: #fff; background: rgba(43,108,176,.25);
+    }
+    .nav-drawer a.checker-link:hover { background: rgba(43,108,176,.4); }
+
+    @media (max-width: 640px) {
+      .hamburger { display: flex; align-items: center; }
+      .nav-links { display: none; }
+    }
   </style>
 </head>
 <body>
@@ -303,6 +392,7 @@
 <!-- ナビ -->
 <nav>
   <a class="nav-logo" href="#"><span>⚠</span> 投資詐欺防止.jp</a>
+  <button class="hamburger" id="hamburger" aria-label="メニューを開く" aria-expanded="false">☰</button>
   <ul class="nav-links">
     <li><a href="#warning">危険サイン</a></li>
     <li><a href="#types">詐欺の手口</a></li>
@@ -312,6 +402,16 @@
     <li><a href="checker.html">🔍 業者チェック</a></li>
     <li><a href="news.html" class="news-link">📰 ニュース</a></li>
   </ul>
+</nav>
+
+<nav id="nav-drawer" class="nav-drawer" role="navigation" aria-label="モバイルメニュー">
+  <a href="#warning">⚠ 危険サイン</a>
+  <a href="#types">📋 詐欺の手口</a>
+  <a href="#checklist">✔ チェックリスト</a>
+  <a href="#steps">🆘 被害にあったら</a>
+  <a href="#resources">📞 相談窓口</a>
+  <a href="checker.html" class="checker-link">🔍 業者チェック</a>
+  <a href="news.html" class="news-link">📰 ニュース</a>
 </nav>
 
 <!-- ティッカー -->
@@ -332,9 +432,14 @@
     <div class="hero-badge">投資詐欺被害 年間 数百億円超</div>
     <h1>その投資話、<span>本当に大丈夫</span>ですか？</h1>
     <p>「必ず儲かる」「元本保証」——甘い言葉の裏に潜む詐欺の手口を知り、大切な資産を守りましょう。</p>
-    <a href="#checklist" class="hero-cta">
-      &#x2714; 今すぐ安全チェック
-    </a>
+    <div class="hero-ctas">
+      <a href="checker.html" class="hero-cta cta-checker">
+        🔍 業者登録チェック
+      </a>
+      <a href="#checklist" class="hero-cta cta-check">
+        &#x2714; 安全チェックリスト
+      </a>
+    </div>
     <div class="hero-stats">
       <div class="stat">
         <div class="stat-num">3万件+</div>
@@ -407,6 +512,16 @@
     </div>
   </div>
 </section>
+
+<!-- 業者チェッカーバナー -->
+<div class="checker-banner">
+  <div class="checker-banner-text">
+    <div class="label">QUICK CHECK</div>
+    <h3>🔍 勧誘された業者、金融庁に登録されていますか？</h3>
+    <p>金融商品取引業者・仲介業者・登録金融機関 計 3,525件を一括検索。会社名を入れるだけで即確認。</p>
+  </div>
+  <a href="checker.html" class="checker-banner-cta">今すぐ業者チェック →</a>
+</div>
 
 <!-- 詐欺の手口 -->
 <section id="types">
@@ -570,6 +685,7 @@
   <p>「おかしい」と思ったその感覚が正解です。迷ったらすぐ相談を。</p>
   <div class="cta-buttons">
     <a href="tel:188" class="btn-white">☎ 188に電話する</a>
+    <a href="checker.html" class="btn-white">🔍 業者登録チェック</a>
     <a href="#warning" class="btn-outline">危険サインを確認する</a>
   </div>
 </section>
@@ -653,6 +769,48 @@
     el.style.transition = "opacity .5s ease, transform .5s ease";
     observer.observe(el);
   });
+</script>
+
+
+<script>
+(function() {
+  var btn    = document.getElementById('hamburger');
+  var drawer = document.getElementById('nav-drawer');
+  if (!btn || !drawer) return;
+
+  function closeMenu() {
+    drawer.classList.remove('open');
+    btn.textContent = '☰';
+    btn.setAttribute('aria-expanded', 'false');
+  }
+  function toggleMenu() {
+    var isOpen = drawer.classList.toggle('open');
+    btn.textContent = isOpen ? '✕' : '☰';
+    btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+  }
+
+  btn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    toggleMenu();
+  });
+
+  // ドロワー外クリックで閉じる
+  document.addEventListener('click', function(e) {
+    if (!drawer.contains(e.target) && e.target !== btn) {
+      closeMenu();
+    }
+  });
+
+  // リンククリックで閉じる
+  drawer.querySelectorAll('a').forEach(function(a) {
+    a.addEventListener('click', closeMenu);
+  });
+
+  // Escキー
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeMenu();
+  });
+})();
 </script>
 
 </body>
